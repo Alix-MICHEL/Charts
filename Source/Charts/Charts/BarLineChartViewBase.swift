@@ -765,6 +765,10 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 _outerScrollView?.nsuiIsScrollEnabled = true
                 _outerScrollView = nil
             }
+            
+            if removeHighlightOnTouchEnd {
+                self.highlightValue(nil, callDelegate: true)
+            }
         }
     }
     

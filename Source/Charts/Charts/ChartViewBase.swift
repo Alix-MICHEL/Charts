@@ -59,6 +59,9 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
     /// If set to true, chart continues to scroll after touch up
     open var dragDecelerationEnabled = true
     
+    // When enabled highlight will disappear on touch end
+    open var removeHighlightOnTouchEnd: Bool = false
+    
     /// Deceleration friction coefficient in [0 ; 1] interval, higher values indicate that speed will decrease slowly, for example if it set to 0, it will stop immediately.
     /// 1 is an invalid value, and will be converted to 0.999 automatically.
     fileprivate var _dragDecelerationFrictionCoef: CGFloat = 0.9
@@ -1013,6 +1016,12 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         if !_interceptTouchEvents
         {
             super.nsuiTouchesBegan(touches, withEvent: event)
+            if self.removeHighlightOnTouchEnd {
+                if let touch = touches.first {
+                    let h = getHighlightByTouchPoint(touch.location(in: self))
+                    self.highlightValue(h, callDelegate: true)
+                }
+            }
         }
     }
     
@@ -1037,6 +1046,10 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         if !_interceptTouchEvents
         {
             super.nsuiTouchesCancelled(touches, withEvent: event)
+            if self.removeHighlightOnTouchEnd {
+                self.highlightValue(nil, callDelegate: true)
+            }
+
         }
     }
 }
